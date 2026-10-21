@@ -793,6 +793,12 @@ if (close(in_fd) == -1 || close(out_fd) == -1)
     </ol></div>
   </div>
 </section>
+<section class="lesson nchunk" id="dr1" data-ch="1" data-title="연습기 · read/write 호출 횟수">
+  <p class="eyebrow">무한 연습기 <span class="pages">원하는 만큼</span></p>
+  <h2>연습기 · read/write 호출 횟수</h2>
+  <p class="goal">숫자가 매번 새로 나옵니다. <b>연습장이나 종이에 끝까지 풀고</b> [풀이 보기] → [맞음]/[틀림]. 같은 유형을 두 번 연속 맞히면 넘어가세요.</p>
+  <div class="dr spdr" data-set="calls"></div>
+</section>
 <section class="lesson nchunk" id="px1" data-ch="1" data-title="Ch2 영어 문제집 (who · cp)">
   <p class="eyebrow">영어 문제집 <span class="pages">20문제 · 약 25분</span></p>
   <h2>Ch2 영어 문제집 (who · cp)</h2>
@@ -1117,6 +1123,12 @@ printf("%s %o\n", minname, minperm);</pre></p><ol><li>① . 과 ..은 디렉터�
       <li><p>권한 최소 비교에서 <code>st_mode &amp; 0777</code>을 하는 이유는?</p><details><summary>답 보기</summary><div class="ans"><p><b><span class="cz on" role="button" tabindex="0">종류·특수 비트를 지우고</span> 권한 9비트만 비교하려고</b></p><p>안 하면 디렉터리 0040000이 일반 파일 0100000보다 작아 항상 이김</p></div></details></li>
     </ol></div>
   </div>
+</section>
+<section class="lesson nchunk" id="dr2" data-ch="2" data-title="연습기 · 권한 비트 (8진수 ↔ rwx ↔ st_mode)">
+  <p class="eyebrow">무한 연습기 <span class="pages">원하는 만큼</span></p>
+  <h2>연습기 · 권한 비트 (8진수 ↔ rwx ↔ st_mode)</h2>
+  <p class="goal">숫자가 매번 새로 나옵니다. <b>연습장이나 종이에 끝까지 풀고</b> [풀이 보기] → [맞음]/[틀림]. 같은 유형을 두 번 연속 맞히면 넘어가세요.</p>
+  <div class="dr spdr" data-set="perm"></div>
 </section>
 <section class="lesson nchunk" id="rc1" data-ch="2" data-title="되짚기 · 앞 장" data-src="n1-1,n1-2,n1-3,n1-4,n1-5,n1-6,n1-7,n1-8,n1-9,n1-10" data-max="12" data-final="0">
   <p class="eyebrow">되짚기 <span class="pages">약 6분</span></p>
@@ -2305,6 +2317,12 @@ else if (pid == 0) {
       <li><p>True or False: Programs usually call _exit() directly instead of exit().</p><details><summary>답 보기</summary><div class="ans"><p><b><span class="cz on" role="button" tabindex="0">False</span></b></p><p>보통 exit()를 부르고, exit가 마지막에 _exit를 부른다 [Ch8 p.58]</p></div></details></li>
     </ol></div>
   </div>
+</section>
+<section class="lesson nchunk" id="dr5" data-ch="5" data-title="연습기 · fork 출력 개수">
+  <p class="eyebrow">무한 연습기 <span class="pages">원하는 만큼</span></p>
+  <h2>연습기 · fork 출력 개수</h2>
+  <p class="goal">숫자가 매번 새로 나옵니다. <b>연습장이나 종이에 끝까지 풀고</b> [풀이 보기] → [맞음]/[틀림]. 같은 유형을 두 번 연속 맞히면 넘어가세요.</p>
+  <div class="dr spdr" data-set="fork"></div>
 </section>
 <section class="lesson nchunk" id="rc4" data-ch="5" data-title="되짚기 · 앞 장" data-src="n4-1,n4-2,n4-3,n4-4,n4-5,n4-6,n4-7,n4-8,n4-9,n4-10" data-max="12" data-final="0">
   <p class="eyebrow">되짚기 <span class="pages">약 6분</span></p>
@@ -4640,6 +4658,103 @@ function $(e,t,u,x=h=>h){return e*x(.5-t*(.5-u))}function se(e){return[-e[0],-e[
     start();
   }
   Array.prototype.forEach.call(document.querySelectorAll(".pq[data-set]"), mount);
+})();
+
+/* 무한 연습기: 권한 비트(8진수 ↔ rwx ↔ st_mode 16비트), read/write 호출 횟수, fork 출력 개수. 매번 새 숫자 */
+(function () {
+  var R = function (a, b) { return a + Math.floor(Math.random() * (b - a + 1)); };
+  function pick(a) { return a[R(0, a.length - 1)]; }
+  function bin(v, n) { var s = v.toString(2); while (s.length < n) s = "0" + s; return s; }
+  function oct(v, n) { var s = v.toString(8); while (s.length < n) s = "0" + s; return s; }
+  function c(s) { return "<code>" + s + "</code>"; }
+  function tbl(head, rows) { return '<div class="tbl"><table><thead><tr>' + head.map(function (x) { return "<th>" + x + "</th>"; }).join("") + "</tr></thead><tbody>" + rows.map(function (r) { return "<tr>" + r.map(function (x) { return "<td>" + x + "</td>"; }).join("") + "</tr>"; }).join("") + "</tbody></table></div>"; }
+
+  // ---------- 권한 비트 도우미 ----------
+  var TYPES = [["-", 8, "일반 파일(regular)", "S_IFREG"], ["d", 4, "디렉터리(directory)", "S_IFDIR"], ["c", 2, "문자 장치(character device)", "S_IFCHR"], ["b", 6, "블록 장치(block device)", "S_IFBLK"], ["l", 10, "심볼릭 링크(symbolic link)", "S_IFLNK"], ["p", 1, "FIFO(파이프)", "S_IFIFO"]];
+  function rwx(d) { return (d & 4 ? "r" : "-") + (d & 2 ? "w" : "-") + (d & 1 ? "x" : "-"); }
+  function letters(sp, u, g, o) {
+    var a = rwx(u).split(""), b = rwx(g).split(""), e = rwx(o).split("");
+    if (sp & 4) a[2] = a[2] === "x" ? "s" : "S";
+    if (sp & 2) b[2] = b[2] === "x" ? "s" : "S";
+    if (sp & 1) e[2] = e[2] === "x" ? "t" : "T";
+    return a.join("") + b.join("") + e.join("");
+  }
+  function randPerm() {
+    var sp = Math.random() < 0.45 ? pick([4, 2, 1, 6]) : 0;
+    var u = pick([7, 7, 6, 5, 4]), g = pick([5, 4, 7, 6, 0, 1]), o = pick([5, 4, 0, 7, 1, 6]);
+    return { sp: sp, u: u, g: g, o: o, t: Math.random() < 0.6 ? TYPES[0] : pick(TYPES) };
+  }
+  function permSteps(p) {
+    return ["8진수 한 자리 = 3비트. 자리마다 <b>r = 4, w = 2, x = 1</b>을 더한 값이다.",
+      "맨 앞 특수 자리: <b>SUID = 4, SGID = 2, sticky = 1</b>. 지금은 " + p.sp + (p.sp ? " (" + [p.sp & 4 ? "SUID" : "", p.sp & 2 ? "SGID" : "", p.sp & 1 ? "sticky" : ""].filter(Boolean).join(" + ") + ")" : " (특수 비트 없음)") + ".",
+      "사용자 " + p.u + " → " + rwx(p.u) + ", 그룹 " + p.g + " → " + rwx(p.g) + ", 기타 " + p.o + " → " + rwx(p.o) + ".",
+      "특수 비트는 x 자리에 표시: SUID → 사용자 x 자리, SGID → 그룹 x 자리, sticky → 기타 x 자리. x가 있으면 소문자(s, t), <b>x가 없으면 대문자(S, T)</b>."];
+  }
+
+  var T = [
+    { id: "o2l", name: "8진수 → rwx", make: function () {
+      var p = randPerm(), o4 = "" + p.sp + p.u + p.g + p.o, s = letters(p.sp, p.u, p.g, p.o);
+      return { q: c("chmod " + o4 + " file") + " 뒤 " + c("ls -l") + "의 권한 9글자는?", a: c(s), steps: permSteps(p).concat(["답: <b>" + s + "</b> (맨 앞 파일 종류 글자는 따로)"]) }; } },
+    { id: "l2o", name: "rwx → 8진수", make: function () {
+      var p = randPerm(), o4 = "" + p.sp + p.u + p.g + p.o, s = letters(p.sp, p.u, p.g, p.o);
+      return { q: c("ls -l") + "의 첫 칸이 " + c(p.t[0] + s) + "이다. (가) 파일 종류 (나) chmod에 쓸 8진수 4자리는?", a: "(가) " + p.t[2] + " (나) " + o4,
+        steps: ["첫 글자 " + c(p.t[0]) + " = " + p.t[2] + ". (- 일반, d 디렉터리, c 문자 장치, b 블록 장치, l 링크, p FIFO)", "9글자를 3개씩: " + s.slice(0, 3) + " | " + s.slice(3, 6) + " | " + s.slice(6) + ".",
+          "s/t(소문자)는 x도 있다는 뜻, S/T(대문자)는 x 없음. 특수 자리: 사용자 쪽 s/S → SUID 4, 그룹 쪽 s/S → SGID 2, 기타 쪽 t/T → sticky 1 → 합 " + p.sp + ".",
+          "자리마다 r 4 + w 2 + x 1: " + p.u + ", " + p.g + ", " + p.o + " → <b>" + o4 + "</b>."] }; } },
+    { id: "mode", name: "st_mode 16비트 → 종류·권한", make: function () {
+      var p = randPerm(), m = (p.t[1] << 12) | (p.sp << 9) | (p.u << 6) | (p.g << 3) | p.o, b = bin(m, 16), s = letters(p.sp, p.u, p.g, p.o);
+      return { q: "stat()으로 얻은 st_mode가 2진수 " + c(b.replace(/(.{4})(.{3})(.{3})(.{3})(.{3})/, "$1 $2 $3 $4 $5")) + "이다. ls -l 첫 칸 10글자는?", a: c(p.t[0] + s),
+        steps: ["16비트 = <b>종류 4 | 특수 3 | 사용자 3 | 그룹 3 | 기타 3</b>.", "종류 " + b.slice(0, 4) + " = 8진수 " + p.t[1].toString(8) + " → " + p.t[2] + " (" + p.t[3] + ", " + c(p.t[0]) + ").",
+          "특수 " + b.slice(4, 7) + " = " + p.sp + ", 사용자 " + b.slice(7, 10) + " = " + p.u + ", 그룹 " + b.slice(10, 13) + " = " + p.g + ", 기타 " + b.slice(13) + " = " + p.o + ".",
+          "8진수로 쓰면 st_mode = 0" + oct(m, 6) + ". 권한 부분 " + p.sp + p.u + p.g + p.o + " → " + s + ".", "답: <b>" + p.t[0] + s + "</b>"] }; } },
+    { id: "bits", name: "권한 → 16비트", make: function () {
+      var p = randPerm(), m = (p.t[1] << 12) | (p.sp << 9) | (p.u << 6) | (p.g << 3) | p.o, b = bin(m, 16);
+      return { q: p.t[2] + "이고 권한이 " + c("" + p.sp + p.u + p.g + p.o) + "인 파일의 st_mode 16비트(2진수)는?", a: c(b.replace(/(.{4})(.{3})(.{3})(.{3})(.{3})/, "$1 $2 $3 $4 $5")),
+        steps: ["종류 4비트: " + p.t[2] + " = " + p.t[1] + " = " + bin(p.t[1], 4) + " (" + p.t[3] + ").", "8진수 한 자리 = 3비트로: " + p.sp + " → " + bin(p.sp, 3) + ", " + p.u + " → " + bin(p.u, 3) + ", " + p.g + " → " + bin(p.g, 3) + ", " + p.o + " → " + bin(p.o, 3) + ".", "이어 붙이면 <b>" + b + "</b>."] }; } },
+    { id: "calls", name: "read/write 호출 횟수", make: function () {
+      var B = pick([100, 128, 256, 500, 512, 1000, 1024, 4096]), N = R(2, 40) * pick([100, 128, 250, 512]) + R(0, 1) * R(1, B - 1), r = Math.ceil(N / B);
+      return { q: "cp1처럼 버퍼 " + B + "바이트로 " + N + "바이트 파일을 복사한다(" + c("while ((n = read(in, buf, " + B + ")) &gt; 0) write(out, buf, n);") + "). 데이터를 읽는 read 호출과 write 호출은 각각 몇 번인가?", a: "read " + r + "번, write " + r + "번 (끝 확인용 read까지 세면 read " + (r + 1) + "번)",
+        steps: ["한 번에 최대 " + B + "바이트씩 읽는다 → 필요한 횟수 = ⌈" + N + " ÷ " + B + "⌉ = <b>" + r + "</b>" + (N % B ? " (마지막 번은 " + (N % B) + "바이트만)" : "") + ".", "읽은 만큼 그대로 쓰니 write도 <b>" + r + "번</b>.", "슬라이드 기준 답은 데이터 read 횟수. 실제 루프는 파일 끝에서 0을 돌려받는 read를 한 번 더 해서 read는 " + (r + 1) + "번 호출된다.", "버퍼가 클수록 시스템 콜 횟수가 줄어 빠르다(사용자 ↔ 커널 전환 비용)."] }; } },
+    { id: "fork", name: "fork 출력 개수", make: function () {
+      var ops = [], n = R(3, 6), letter = 0, lines = [], cnt = [], f = 0, L = "ABCDEFG";
+      for (var i = 0; i < n; i++) { if (Math.random() < 0.5 && f < 3) { ops.push("fork();"); f++; } else { ops.push('printf("' + L[letter] + '\\n");'); cnt.push([L[letter], Math.pow(2, f)]); letter++; } }
+      if (!cnt.length) { ops.push('printf("' + L[letter] + '\\n");'); cnt.push([L[letter], Math.pow(2, f)]); }
+      var tot = cnt.reduce(function (s, x) { return s + x[1]; }, 0);
+      return { q: "다음 main을 실행하면 각 글자는 몇 번 출력되고, 전체 몇 줄인가? (모든 fork는 성공, 출력은 터미널)<pre class=\"asm\">int main() {\n    " + ops.join("\n    ") + "\n    return 0;\n}</pre>", a: cnt.map(function (x) { return x[0] + " " + x[1] + "번"; }).join(", ") + ", 전체 " + tot + "줄",
+        steps: ["fork()는 그 시점의 프로세스를 하나 더 만든다. 그 뒤 줄은 <b>프로세스 수만큼</b> 실행된다.", "fork를 k번 지난 뒤의 줄은 프로세스 2<sup>k</sup>개가 실행한다.", tbl(["줄", "앞에 지난 fork 수", "출력 횟수"], cnt.map(function (x) { var k = Math.round(Math.log(x[1]) / Math.LN2); return [x[0], k, x[1]]; })), "합 = <b>" + tot + "줄</b>. 출력 순서는 스케줄러에 따라 달라질 수 있다."] }; } }
+  ];
+  var SETS = { perm: T.slice(0, 4), calls: [T[4]], fork: [T[5]], all: T };
+
+  function mount(box, TT, KEY) {
+    var st = {}; try { st = JSON.parse(localStorage.getItem(KEY) || "{}") || {}; } catch (e) {}
+    st.sc = st.sc || {}; st.sel = st.sel || "mix";
+    function save() { try { localStorage.setItem(KEY, JSON.stringify(st)); } catch (e) {} }
+    var cur = null;
+    box.innerHTML = '<div class="dr-types"></div><div class="dr-card"><p class="dr-type"></p><div class="dr-q"></div>' +
+      '<div class="dr-btns"><button type="button" class="dr-b" data-a="new">새 문제</button><button type="button" class="dr-b" data-a="sol">풀이 보기</button></div>' +
+      '<div class="dr-sol" hidden></div><div class="dr-mark" hidden><button type="button" class="dr-b ok" data-a="o">맞음</button><button type="button" class="dr-b no" data-a="x">틀림</button></div></div><p class="dr-score"></p>';
+    function paintTypes() {
+      box.querySelector(".dr-types").innerHTML = (TT.length > 1 ? [{ id: "mix", name: "섞어서" }] : []).concat(TT).map(function (t) { var s = st.sc[t.id], sc = s ? " <small>" + s.o + "/" + (s.o + s.x) + "</small>" : ""; return '<button type="button" class="dr-t" data-t="' + t.id + '" aria-pressed="' + (st.sel === t.id || (TT.length === 1)) + '">' + t.name + sc + "</button>"; }).join("");
+      var all = TT.reduce(function (a, t) { var s = st.sc[t.id] || { o: 0, x: 0 }; return { o: a.o + s.o, x: a.x + s.x }; }, { o: 0, x: 0 });
+      box.querySelector(".dr-score").textContent = "지금까지 맞음 " + all.o + " · 틀림 " + all.x;
+    }
+    function next() {
+      var t = st.sel === "mix" || TT.length === 1 ? TT[R(0, TT.length - 1)] : TT.filter(function (x) { return x.id === st.sel; })[0] || TT[0], p = t.make(); cur = { t: t };
+      box.querySelector(".dr-type").textContent = t.name; box.querySelector(".dr-q").innerHTML = "<p>" + p.q + "</p>";
+      var sol = box.querySelector(".dr-sol"); sol.innerHTML = '<p class="dr-a">답: <b>' + p.a + "</b></p><ol>" + p.steps.map(function (s) { return "<li>" + s + "</li>"; }).join("") + "</ol>";
+      sol.hidden = true; box.querySelector(".dr-mark").hidden = true;
+    }
+    box.addEventListener("click", function (e) {
+      var b = e.target.closest("button"); if (!b) return;
+      if (b.dataset.t) { st.sel = b.dataset.t; save(); paintTypes(); next(); return; }
+      if (b.dataset.a === "new") next();
+      else if (b.dataset.a === "sol") { box.querySelector(".dr-sol").hidden = false; box.querySelector(".dr-mark").hidden = false; }
+      else if (b.dataset.a === "o" || b.dataset.a === "x") { var s = st.sc[cur.t.id] = st.sc[cur.t.id] || { o: 0, x: 0 }; s[b.dataset.a]++; save(); paintTypes(); next(); }
+    });
+    paintTypes(); next();
+  }
+  window.spDrillTypes = T;
+  Array.prototype.forEach.call(document.querySelectorAll(".spdr[data-set]"), function (box) { var k = box.dataset.set; if (SETS[k]) mount(box, SETS[k], "sp_dr_" + k); });
 })();
 </script>
 <script>if("serviceWorker" in navigator){var hadC=!!navigator.serviceWorker.controller;navigator.serviceWorker.register("sw.js").catch(function(){});navigator.serviceWorker.addEventListener("controllerchange",function(){try{if(hadC&&!sessionStorage.getItem("swr")){sessionStorage.setItem("swr","1");location.reload()}}catch(e){}})}</script>
