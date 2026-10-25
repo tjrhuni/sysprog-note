@@ -5807,6 +5807,14 @@ function $(e,t,u,x=h=>h){return e*x(.5-t*(.5-u))}function se(e){return[-e[0],-e[
       box.querySelector(".pq-next").hidden = false;
     });
     function n3(it) { return it.choices.length >= 3; }
+    // 사전 시험에서 고른 답은 나중에 생기므로, 이 단원이 화면에 나올 때 「처음 고른 답」 줄을 다시 붙인다
+    var sec = box.closest("section");
+    if (sec && !pre && !mix) new MutationObserver(function () {
+      if (!sec.classList.contains("on") || answered || !q.length) return;
+      var p0 = st["pre#" + set + "#" + q[0]], card = box.querySelector(".oc-card"), el = card.querySelector(".pq-pre");
+      if (p0 === undefined || el) return;
+      card.insertAdjacentHTML("afterbegin", '<p class="pq-pre">처음 고른 답: ' + (p0 < 0 ? "모름" : L[p0]) + "</p>");
+    }).observe(sec, { attributes: true, attributeFilter: ["class"] });
     start();
   }
   Array.prototype.forEach.call(document.querySelectorAll(".pq[data-set]"), mount);
